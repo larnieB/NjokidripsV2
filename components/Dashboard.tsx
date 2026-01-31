@@ -71,7 +71,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   // 2. Add the function here
   const handlePaymentInitiation = async (challengeId: number) => {
   try {
-    const response = await fetch('backend/initiate_payment.php', {
+    const response = await fetch('http://localhost:8080/NjokidripsV2/backend/initiate_payment.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
