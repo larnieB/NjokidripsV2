@@ -97,7 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 useEffect(() => {
     const fetchDailyQuest = async () => {
       try {
-        const response = await fetch('backend/get_quest.php');
+        const response = await fetch('http://localhost:8080/NjokidripsV2/backend/get_quest.php');
         const data = await response.json();
         
         // Update the state with what the PHP script found
