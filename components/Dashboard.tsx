@@ -27,6 +27,7 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeChallenge, setActiveChallenge] = useState<boolean>(false);
+  const [isPaid, setIsPaid] = useState<boolean>(false);
 
   // Expanded mock data for challenges to emphasize the "Interactive" focus
   const challenges = [
@@ -61,6 +62,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       difficulty: "Easy"
     }
   ];
+
+  // 2. Add the function here
+  const handlePaymentInitiation = (challengeId: number) => {
+    // Trigger your payment gateway (e.g., M-Pesa API) here
+    console.log(`Initiating 20/- payment for challenge ${challengeId}`);
+    
+    // Simulate successful payment callback
+    setTimeout(() => {
+      setIsPaid(true);
+      setActiveChallenge(true);
+      alert("Payment confirmed! Good luck in the Arena.");
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col md:flex-row relative">
@@ -165,12 +179,22 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   </div>
                   <h2 className="font-heading text-2xl font-black mb-2">Today's Market Analysis</h2>
                   <p className="text-gray-400 font-light mb-8 max-w-md">Predict the trend for the "Autumn Tech-Wear" line based on this morning's AI data feed.</p>
-                  <button 
-                    onClick={() => setActiveChallenge(true)}
-                    className="mt-auto w-fit bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-pink-accent hover:text-white transition-all flex items-center gap-2"
-                  >
-                    Begin Task <ChevronRight className="w-4 h-4" />
-                  </button>
+                <button 
+  onClick={() => {
+    // Manually define the entry requirements for the Daily Quest
+    const dailyQuestEntry = "Ksh 20"; 
+    const dailyQuestId = 999; // Unique ID for today's quest
+
+    if (dailyQuestEntry === "Ksh 20" && !isPaid) {
+      handlePaymentInitiation(dailyQuestId);
+    } else {
+      setActiveChallenge(true);
+    }
+  }}
+  className="mt-auto w-fit bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-pink-accent hover:text-white transition-all flex items-center gap-2"
+>
+  {!isPaid ? 'Pay Ksh 20 to Begin' : 'Begin Task'} <ChevronRight className="w-4 h-4" />
+</button>
                 </div>
                 <div className="absolute top-0 right-0 w-64 h-64 bg-pink-accent/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-pink-accent/20 transition-colors"></div>
               </div>

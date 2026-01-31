@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { CheckCircle2, Trophy, ArrowRight, RefreshCcw } from 'lucide-react';
 
+interface ArenaChallengeProps {
+  onComplete: () => void;
+  isPaid?: boolean; // Add this prop
+}
+
 const QUESTIONS = [
   {
     id: 1,
@@ -37,7 +42,20 @@ const QUESTIONS = [
   }
 ];
 
-const ArenaChallenge: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+const ArenaChallenge: React.FC<{ onComplete: () => void }> = ({ onComplete, isPaid }) => {
+
+if (!isPaid) {
+    return (
+      <div className="text-center p-12 bg-white rounded-[2.5rem]">
+        <h2 className="text-2xl font-black mb-4">Access Locked</h2>
+        <p className="mb-6">This challenge requires a Ksh 20 entry fee.</p>
+        <button className="bg-pink-accent text-white px-8 py-3 rounded-full font-bold">
+          Pay Now
+        </button>
+      </div>
+    );
+  }
+
   const [currentStep, setCurrentStep] = useState(0);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
