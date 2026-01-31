@@ -1,16 +1,33 @@
-
 import React from 'react';
-import { LayoutDashboard, LogOut, Bell, User, Settings } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  LogOut, 
+  Bell, 
+  User, 
+  Settings, 
+  Trophy, 
+  TrendingUp, 
+  Gamepad2, 
+  Wallet,
+  ArrowUpRight,
+  Clock
+} from 'lucide-react';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+  // Mock data for the dashboard state
+  const challenges = [
+    { id: 1, title: "Boss Lady Strategy Hack", entry: "Ksh 500", prize: "Ksh 10,000", timeLeft: "2h 15m", participants: 124 },
+    { id: 2, title: "AI Prompt Engineering Sprint", entry: "Ksh 200", prize: "Ksh 5,000", timeLeft: "5h 40m", participants: 89 }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-100 hidden md:flex flex-col p-6">
+      {/* Sidebar - Consistent with project branding */}
+      <aside className="w-64 bg-white border-r border-gray-100 hidden md:flex flex-col p-6 sticky top-0 h-screen">
         <div className="flex items-center gap-3 mb-12">
           <div className="w-8 h-8 bg-pink-accent rounded-lg flex items-center justify-center">
              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white fill-current">
@@ -21,22 +38,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
 
         <nav className="flex-1 space-y-2">
-          <div className="p-3 bg-pink-accent/5 text-pink-accent rounded-xl flex items-center gap-3 font-bold">
+          <button className="w-full p-3 bg-pink-accent/5 text-pink-accent rounded-xl flex items-center gap-3 font-bold">
             <LayoutDashboard className="w-5 h-5" />
             Overview
-          </div>
-          <div className="p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors cursor-pointer">
+          </button>
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
+            <Gamepad2 className="w-5 h-5" />
+            Challenges
+          </button>
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
+            <TrendingUp className="w-5 h-5" />
+            Finance
+          </button>
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
             <User className="w-5 h-5" />
             Profile
-          </div>
-          <div className="p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors cursor-pointer">
-            <Bell className="w-5 h-5" />
-            Notifications
-          </div>
-          <div className="p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors cursor-pointer">
+          </button>
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
             <Settings className="w-5 h-5" />
             Settings
-          </div>
+          </button>
         </nav>
 
         <button 
@@ -48,34 +69,124 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </button>
       </aside>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="flex-1 p-8 md:p-12 overflow-y-auto">
         <header className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="font-heading text-3xl font-black text-gray-900">Dashboard</h1>
-            <p className="text-gray-500 font-light mt-1">Welcome back to your command center.</p>
+            <h1 className="font-heading text-3xl font-black text-gray-900">Empowerment Hub</h1>
+            <p className="text-gray-500 font-light mt-1">Level up your style, strategy, and savings.</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            {/* Wallet Quick View */}
+            <div className="bg-white px-4 py-2 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
+              <Wallet className="w-5 h-5 text-cyan-accent" />
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Balance</p>
+                <p className="text-sm font-black text-gray-900 font-heading">Ksh 12,450</p>
+              </div>
+            </div>
+            <div className="relative cursor-pointer text-gray-400 hover:text-gray-900 transition-colors">
+              <Bell className="w-6 h-6" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-pink-accent rounded-full border-2 border-white"></span>
+            </div>
             <div className="w-12 h-12 bg-gray-200 rounded-full border-4 border-white shadow-sm overflow-hidden">
                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" alt="Profile" />
             </div>
-            <button 
-              onClick={onLogout}
-              className="md:hidden p-2 text-gray-400"
-            >
-              <LogOut className="w-6 h-6" />
-            </button>
           </div>
         </header>
 
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-[2.5rem] p-20 flex flex-col items-center justify-center text-center">
-          <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-6">
-            <LayoutDashboard className="w-10 h-10 text-gray-300" />
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-pink-accent/10 rounded-2xl text-pink-accent">
+                <Trophy className="w-6 h-6" />
+              </div>
+              <span className="text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded-lg">+12% vs last week</span>
+            </div>
+            <h3 className="text-gray-500 text-sm font-medium">Challenge Wins</h3>
+            <p className="text-2xl font-black text-gray-900 font-heading mt-1">4 Won</p>
           </div>
-          <h2 className="font-heading text-4xl font-black text-gray-900 mb-4">Dashboard coming soon</h2>
-          <p className="text-gray-500 max-w-sm font-light text-lg">
-            We're building your personalized experience to help you manage your fashion, finance, and career goals.
-          </p>
+
+          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-cyan-accent/10 rounded-2xl text-cyan-accent">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <span className="text-xs font-bold text-cyan-accent bg-cyan-50 px-2 py-1 rounded-lg">On Track</span>
+            </div>
+            <h3 className="text-gray-500 text-sm font-medium">Investment Goal</h3>
+            <p className="text-2xl font-black text-gray-900 font-heading mt-1">72% Completed</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-blue-accent/10 rounded-2xl text-blue-accent">
+                <LayoutDashboard className="w-6 h-6" />
+              </div>
+            </div>
+            <h3 className="text-gray-500 text-sm font-medium">Drip Points</h3>
+            <p className="text-2xl font-black text-gray-900 font-heading mt-1">2,840 pts</p>
+          </div>
+        </div>
+
+        {/* Challenges & Featured Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <section>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-heading text-xl font-black text-gray-900">Active Challenges</h2>
+              <button className="text-pink-accent text-sm font-bold hover:underline">View all</button>
+            </div>
+            <div className="space-y-4">
+              {challenges.map(challenge => (
+                <div key={challenge.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-heading font-extrabold text-gray-900">{challenge.title}</h4>
+                      <div className="flex gap-4 mt-2">
+                        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
+                          <Clock className="w-3.5 h-3.5" /> {challenge.timeLeft} left
+                        </span>
+                        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
+                          <User className="w-3.5 h-3.5" /> {challenge.participants} joined
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] uppercase font-bold text-gray-400">Prize Pool</p>
+                      <p className="text-lg font-black text-pink-accent font-heading">{challenge.prize}</p>
+                    </div>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-gray-900">Entry: {challenge.entry}</span>
+                    </div>
+                    <button className="bg-gray-900 text-white px-6 py-2.5 rounded-full font-heading font-bold text-xs hover:bg-pink-accent transition-colors flex items-center gap-2">
+                      Enter Arena <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-heading text-xl font-black text-gray-900">Your Mentorship Feed</h2>
+            </div>
+            <div className="bg-gray-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
+              <div className="relative z-10">
+                <span className="bg-cyan-accent text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block">Featured Tool</span>
+                <h3 className="font-heading text-2xl font-black mb-4">Leveraging AI for <br/>Strategic Fashion Buying</h3>
+                <p className="text-gray-400 font-light mb-8 max-w-xs">Learn how to use data models to predict next season's trends and maximize your ROI.</p>
+                <button className="bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-cyan-accent transition-colors">
+                  Start Learning
+                </button>
+              </div>
+              {/* Decorative elements consistent with Hero.tsx */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-accent/20 rounded-full blur-3xl"></div>
+            </div>
+          </section>
         </div>
       </main>
     </div>
