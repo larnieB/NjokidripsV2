@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
   LogOut, 
@@ -8,9 +8,11 @@ import {
   Trophy, 
   TrendingUp, 
   Gamepad2, 
-  Wallet,
-  ArrowUpRight,
-  Clock
+  Wallet, 
+  ArrowUpRight, 
+  Clock, 
+  Menu, 
+  X 
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -18,23 +20,42 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
-  // Mock data for the dashboard state
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  // Mock data for challenges
   const challenges = [
     { id: 1, title: "Boss Lady Strategy Hack", entry: "Ksh 500", prize: "Ksh 10,000", timeLeft: "2h 15m", participants: 124 },
     { id: 2, title: "AI Prompt Engineering Sprint", entry: "Ksh 200", prize: "Ksh 5,000", timeLeft: "5h 40m", participants: 89 }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar - Consistent with project branding */}
-      <aside className="w-64 bg-white border-r border-gray-100 hidden md:flex flex-col p-6 sticky top-0 h-screen">
-        <div className="flex items-center gap-3 mb-12">
-          <div className="w-8 h-8 bg-pink-accent rounded-lg flex items-center justify-center">
-             <svg viewBox="0 0 24 24" className="w-5 h-5 text-white fill-current">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white border-b border-gray-100 p-4 flex justify-between items-center sticky top-0 z-50">
+        <span className="font-heading font-black text-lg text-gray-900">njoki drips</span>
+        <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-gray-100 rounded-lg">
+          <Menu className="w-6 h-6 text-gray-600" />
+        </button>
+      </div>
+
+      {/* Sidebar - Mobile Toggleable & Desktop Permanent */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-[100] w-64 bg-white border-r border-gray-100 p-6 transform transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:relative md:translate-x-0 md:flex md:flex-col md:h-screen md:sticky md:top-0
+      `}>
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-3">
+             <div className="w-8 h-8 bg-pink-accent rounded-lg flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 text-white fill-current">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+             </div>
+             <span className="font-heading font-black text-lg text-gray-900">njoki drips</span>
           </div>
-          <span className="font-heading font-black text-lg text-gray-900">njoki drips</span>
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden p-2 text-gray-400 hover:bg-gray-100 rounded-lg">
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -42,67 +63,58 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <LayoutDashboard className="w-5 h-5" />
             Overview
           </button>
-          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <Gamepad2 className="w-5 h-5" />
             Challenges
           </button>
-          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <TrendingUp className="w-5 h-5" />
             Finance
           </button>
-          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <User className="w-5 h-5" />
             Profile
           </button>
-          <button className="w-full p-3 text-gray-400 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors">
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <Settings className="w-5 h-5" />
             Settings
           </button>
         </nav>
 
-        <button 
-          onClick={onLogout}
-          className="mt-auto p-3 text-gray-400 hover:text-pink-accent rounded-xl flex items-center gap-3 transition-colors font-semibold"
-        >
-          <LogOut className="w-5 h-5" />
-          Logout
+        <button onClick={onLogout} className="mt-auto p-3 text-gray-400 hover:text-pink-accent rounded-xl flex items-center gap-3 transition-colors font-semibold">
+          <LogOut className="w-5 h-5" /> Logout
         </button>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <header className="flex justify-between items-center mb-12">
+      <main className="flex-1 p-4 sm:p-8 md:p-12 overflow-x-hidden">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
           <div>
-            <h1 className="font-heading text-3xl font-black text-gray-900">Empowerment Hub</h1>
-            <p className="text-gray-500 font-light mt-1">Level up your style, strategy, and savings.</p>
+            <h1 className="font-heading text-2xl md:text-3xl font-black text-gray-900">Empowerment Hub</h1>
+            <p className="text-gray-500 font-light mt-1 text-sm md:text-base">Level up your style, strategy, and savings.</p>
           </div>
-          <div className="flex items-center gap-6">
-            {/* Wallet Quick View */}
-            <div className="bg-white px-4 py-2 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
+          <div className="flex items-center gap-3 md:gap-6 w-full sm:w-auto">
+            <div className="flex-1 sm:flex-none bg-white px-4 py-2 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
               <Wallet className="w-5 h-5 text-cyan-accent" />
               <div>
                 <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Balance</p>
                 <p className="text-sm font-black text-gray-900 font-heading">Ksh 12,450</p>
               </div>
             </div>
-            <div className="relative cursor-pointer text-gray-400 hover:text-gray-900 transition-colors">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-pink-accent rounded-full border-2 border-white"></span>
-            </div>
-            <div className="w-12 h-12 bg-gray-200 rounded-full border-4 border-white shadow-sm overflow-hidden">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-200 rounded-full border-4 border-white shadow-sm overflow-hidden flex-shrink-0">
                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" alt="Profile" />
             </div>
           </div>
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-pink-accent/10 rounded-2xl text-pink-accent">
                 <Trophy className="w-6 h-6" />
               </div>
-              <span className="text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded-lg">+12% vs last week</span>
+              <span className="text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded-lg">+12%</span>
             </div>
             <h3 className="text-gray-500 text-sm font-medium">Challenge Wins</h3>
             <p className="text-2xl font-black text-gray-900 font-heading mt-1">4 Won</p>
@@ -116,10 +128,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <span className="text-xs font-bold text-cyan-accent bg-cyan-50 px-2 py-1 rounded-lg">On Track</span>
             </div>
             <h3 className="text-gray-500 text-sm font-medium">Investment Goal</h3>
-            <p className="text-2xl font-black text-gray-900 font-heading mt-1">72% Completed</p>
+            <p className="text-2xl font-black text-gray-900 font-heading mt-1">72%</p>
           </div>
 
-          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 sm:col-span-2 lg:col-span-1">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-blue-accent/10 rounded-2xl text-blue-accent">
                 <LayoutDashboard className="w-6 h-6" />
@@ -131,7 +143,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
 
         {/* Challenges & Featured Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
           <section>
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-heading text-xl font-black text-gray-900">Active Challenges</h2>
@@ -140,10 +152,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="space-y-4">
               {challenges.map(challenge => (
                 <div key={challenge.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                     <div>
                       <h4 className="font-heading font-extrabold text-gray-900">{challenge.title}</h4>
-                      <div className="flex gap-4 mt-2">
+                      <div className="flex flex-wrap gap-4 mt-2">
                         <span className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
                           <Clock className="w-3.5 h-3.5" /> {challenge.timeLeft} left
                         </span>
@@ -152,16 +164,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         </span>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="sm:text-right">
                       <p className="text-[10px] uppercase font-bold text-gray-400">Prize Pool</p>
                       <p className="text-lg font-black text-pink-accent font-heading">{challenge.prize}</p>
                     </div>
                   </div>
-                  <div className="mt-6 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-gray-900">Entry: {challenge.entry}</span>
-                    </div>
-                    <button className="bg-gray-900 text-white px-6 py-2.5 rounded-full font-heading font-bold text-xs hover:bg-pink-accent transition-colors flex items-center gap-2">
+                  <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span className="text-sm font-bold text-gray-900">Entry: {challenge.entry}</span>
+                    <button className="w-full sm:w-auto bg-gray-900 text-white px-6 py-2.5 rounded-full font-heading font-bold text-xs hover:bg-pink-accent transition-colors flex items-center justify-center gap-2">
                       Enter Arena <ArrowUpRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -174,21 +184,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-heading text-xl font-black text-gray-900">Your Mentorship Feed</h2>
             </div>
-            <div className="bg-gray-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
+            <div className="bg-gray-900 rounded-[2.5rem] p-6 sm:p-8 text-white relative overflow-hidden">
               <div className="relative z-10">
                 <span className="bg-cyan-accent text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block">Featured Tool</span>
-                <h3 className="font-heading text-2xl font-black mb-4">Leveraging AI for <br/>Strategic Fashion Buying</h3>
-                <p className="text-gray-400 font-light mb-8 max-w-xs">Learn how to use data models to predict next season's trends and maximize your ROI.</p>
-                <button className="bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-cyan-accent transition-colors">
+                <h3 className="font-heading text-xl sm:text-2xl font-black mb-4">Leveraging AI for <br/>Strategic Fashion Buying</h3>
+                <p className="text-gray-400 font-light mb-8 max-w-xs text-sm sm:text-base">Learn how to use data models to predict next season's trends and maximize your ROI.</p>
+                <button className="w-full sm:w-auto bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-cyan-accent transition-colors">
                   Start Learning
                 </button>
               </div>
-              {/* Decorative elements consistent with Hero.tsx */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-accent/20 rounded-full blur-3xl"></div>
             </div>
           </section>
         </div>
       </main>
+
+      {/* Sidebar Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[90] md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
     </div>
   );
 };
