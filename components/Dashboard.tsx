@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ArenaChallenge from './ArenaChallenge';
 import { 
   LayoutDashboard, 
@@ -28,6 +28,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeChallenge, setActiveChallenge] = useState<boolean>(false);
   const [isPaid, setIsPaid] = useState<boolean>(false);
+  const [dailyQuest, setDailyQuest] = useState({
+    title: "Loading...",
+    description: "Fetching today's challenge...",
+    points: 0
+  });
 
   // Expanded mock data for challenges to emphasize the "Interactive" focus
   const challenges = [
@@ -64,17 +69,50 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   ];
 
   // 2. Add the function here
-  const handlePaymentInitiation = (challengeId: number) => {
-    // Trigger your payment gateway (e.g., M-Pesa API) here
-    console.log(`Initiating 20/- payment for challenge ${challengeId}`);
+  const handlePaymentInitiation = async (challengeId: number) => {
+  try {
+    const response = await fetch('backend/initiate_payment.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        challengeId: challengeId,
+        amount: 20 
+      })
+    });
+
+    const result = await response.json();
     
-    // Simulate successful payment callback
-    setTimeout(() => {
+    if (result.status === 'success') {
       setIsPaid(true);
       setActiveChallenge(true);
       alert("Payment confirmed! Good luck in the Arena.");
-    }, 2000);
-  };
+    } else {
+      alert("Payment failed: " + result.message);
+    }
+  } catch (error) {
+    console.error("Error connecting to PHP backend:", error);
+  }
+};
+
+useEffect(() => {
+    const fetchDailyQuest = async () => {
+      try {
+        const response = await fetch('backend/get_quest.php');
+        const data = await response.json();
+        
+        // Update the state with what the PHP script found
+        setDailyQuest({
+          title: data.title,
+          description: data.description,
+          points: data.points
+        });
+      } catch (error) {
+        console.error("Could not load daily quest", error);
+      }
+    };
+
+    fetchDailyQuest();
+  }, []); // The empty brackets [] mean "run only once on load"
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col md:flex-row relative">
@@ -177,8 +215,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     <span className="bg-pink-accent text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Daily Quest</span>
                     <span className="text-pink-accent flex items-center gap-1 text-xs font-bold"><Zap className="w-3 h-3 fill-current" /> +150 pts</span>
                   </div>
-                  <h2 className="font-heading text-2xl font-black mb-2">Today's Market Analysis</h2>
-                  <p className="text-gray-400 font-light mb-8 max-w-md">Predict the trend for the "Autumn Tech-Wear" line based on this morning's AI data feed.</p>
+                  <h2 className="font-heading text-2xl font-black mb-2">{dailyQuest.title}</h2>
+                  <p className="text-gray-400 font-light mb-8 max-w-md">{dailyQuest.description}</p>
                 <button 
   onClick={() => {
     // Manually define the entry requirements for the Daily Quest
