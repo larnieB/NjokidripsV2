@@ -12,7 +12,11 @@ import {
   ArrowUpRight, 
   Clock, 
   Menu, 
-  X 
+  X,
+  Target,
+  BookOpen,
+  Zap,
+  ChevronRight
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -22,14 +26,42 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // Mock data for challenges
+  // Expanded mock data for challenges to emphasize the "Interactive" focus
   const challenges = [
-    { id: 1, title: "Boss Lady Strategy Hack", entry: "Ksh 500", prize: "Ksh 10,000", timeLeft: "2h 15m", participants: 124 },
-    { id: 2, title: "AI Prompt Engineering Sprint", entry: "Ksh 200", prize: "Ksh 5,000", timeLeft: "5h 40m", participants: 89 }
+    { 
+      id: 1, 
+      title: "Boss Lady Strategy Hack", 
+      entry: "Ksh 500", 
+      prize: "Ksh 10,000", 
+      timeLeft: "2h 15m", 
+      participants: 124,
+      category: "Strategy",
+      difficulty: "Hard"
+    },
+    { 
+      id: 2, 
+      title: "AI Prompt Engineering Sprint", 
+      entry: "Ksh 200", 
+      prize: "Ksh 5,000", 
+      timeLeft: "5h 40m", 
+      participants: 89,
+      category: "Tech",
+      difficulty: "Medium"
+    },
+    { 
+      id: 3, 
+      title: "Fashion ROI Forecasting", 
+      entry: "Free", 
+      prize: "500 Drip Pts", 
+      timeLeft: "12h 10m", 
+      participants: 450,
+      category: "Fashion",
+      difficulty: "Easy"
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col md:flex-row relative">
       {/* Mobile Header */}
       <div className="md:hidden bg-white border-b border-gray-100 p-4 flex justify-between items-center sticky top-0 z-50">
         <span className="font-heading font-black text-lg text-gray-900">njoki drips</span>
@@ -38,7 +70,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </button>
       </div>
 
-      {/* Sidebar - Mobile Toggleable & Desktop Permanent */}
+      {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-[100] w-64 bg-white border-r border-gray-100 p-6 transform transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -59,18 +91,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
 
         <nav className="flex-1 space-y-2">
-          <button className="w-full p-3 bg-pink-accent/5 text-pink-accent rounded-xl flex items-center gap-3 font-bold">
+          <button className="w-full p-3 bg-pink-accent text-white rounded-xl flex items-center gap-3 font-bold shadow-lg shadow-pink-100">
             <LayoutDashboard className="w-5 h-5" />
-            Overview
+            Arena Overview
           </button>
           <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <Gamepad2 className="w-5 h-5" />
-            Challenges
+            Live Challenges
+          </button>
+          <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
+            <BookOpen className="w-5 h-5" />
+            Knowledge Base
           </button>
           <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <TrendingUp className="w-5 h-5" />
-            Finance
+            Portfolio
           </button>
+          <div className="pt-4 pb-2 px-3">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Account</p>
+          </div>
           <button className="w-full p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors">
             <User className="w-5 h-5" />
             Profile
@@ -90,113 +129,141 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       <main className="flex-1 p-4 sm:p-8 md:p-12 overflow-x-hidden">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
           <div>
-            <h1 className="font-heading text-2xl md:text-3xl font-black text-gray-900">Empowerment Hub</h1>
-            <p className="text-gray-500 font-light mt-1 text-sm md:text-base">Level up your style, strategy, and savings.</p>
+            <h1 className="font-heading text-3xl md:text-4xl font-black text-gray-900">The Arena</h1>
+            <p className="text-gray-500 font-light mt-1 text-sm md:text-base">Apply your knowledge, compete, and earn rewards.</p>
           </div>
           <div className="flex items-center gap-3 md:gap-6 w-full sm:w-auto">
-            <div className="flex-1 sm:flex-none bg-white px-4 py-2 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
+            <div className="flex-1 sm:flex-none bg-white px-5 py-3 rounded-[1.5rem] border border-gray-100 shadow-sm flex items-center gap-3">
               <Wallet className="w-5 h-5 text-cyan-accent" />
               <div>
-                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Balance</p>
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Earnings</p>
                 <p className="text-sm font-black text-gray-900 font-heading">Ksh 12,450</p>
               </div>
             </div>
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-200 rounded-full border-4 border-white shadow-sm overflow-hidden flex-shrink-0">
+            <div className="w-12 h-12 bg-gray-200 rounded-full border-4 border-white shadow-md overflow-hidden flex-shrink-0">
                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" alt="Profile" />
             </div>
           </div>
         </header>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
-          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-pink-accent/10 rounded-2xl text-pink-accent">
-                <Trophy className="w-6 h-6" />
+        {/* Action Grid: Quick Stats & Daily Task */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          {/* Daily Quest - New Interactive Element */}
+          <div className="lg:col-span-2 bg-gradient-to-br from-gray-900 to-gray-800 rounded-[2.5rem] p-8 text-white relative overflow-hidden group">
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="bg-pink-accent text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Daily Quest</span>
+                <span className="text-pink-accent flex items-center gap-1 text-xs font-bold"><Zap className="w-3 h-3 fill-current" /> +150 pts</span>
               </div>
-              <span className="text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded-lg">+12%</span>
+              <h2 className="font-heading text-2xl font-black mb-2">Today's Market Analysis</h2>
+              <p className="text-gray-400 font-light mb-8 max-w-md">Predict the trend for the "Autumn Tech-Wear" line based on this morning's AI data feed.</p>
+              <button className="mt-auto w-fit bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-pink-accent hover:text-white transition-all flex items-center gap-2">
+                Begin Task <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-            <h3 className="text-gray-500 text-sm font-medium">Challenge Wins</h3>
-            <p className="text-2xl font-black text-gray-900 font-heading mt-1">4 Won</p>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-pink-accent/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-pink-accent/20 transition-colors"></div>
           </div>
 
-          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-cyan-accent/10 rounded-2xl text-cyan-accent">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-              <span className="text-xs font-bold text-cyan-accent bg-cyan-50 px-2 py-1 rounded-lg">On Track</span>
-            </div>
-            <h3 className="text-gray-500 text-sm font-medium">Investment Goal</h3>
-            <p className="text-2xl font-black text-gray-900 font-heading mt-1">72%</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 sm:col-span-2 lg:col-span-1">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-blue-accent/10 rounded-2xl text-blue-accent">
-                <LayoutDashboard className="w-6 h-6" />
-              </div>
-            </div>
-            <h3 className="text-gray-500 text-sm font-medium">Drip Points</h3>
-            <p className="text-2xl font-black text-gray-900 font-heading mt-1">2,840 pts</p>
+          {/* Mini Stats Stack */}
+          <div className="space-y-4">
+             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-gray-400 text-xs font-bold uppercase tracking-wider">Arena Rank</h3>
+                  <p className="text-xl font-black text-gray-900 font-heading">#42 Global</p>
+                </div>
+                <div className="p-3 bg-blue-accent/10 rounded-2xl text-blue-accent">
+                  <Trophy className="w-6 h-6" />
+                </div>
+             </div>
+             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-gray-400 text-xs font-bold uppercase tracking-wider">Drip Points</h3>
+                  <p className="text-xl font-black text-gray-900 font-heading">2,840 pts</p>
+                </div>
+                <div className="p-3 bg-cyan-accent/10 rounded-2xl text-cyan-accent">
+                  <Target className="w-6 h-6" />
+                </div>
+             </div>
           </div>
         </div>
 
-        {/* Challenges & Featured Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
-          <section>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-heading text-xl font-black text-gray-900">Active Challenges</h2>
-              <button className="text-pink-accent text-sm font-bold hover:underline">View all</button>
-            </div>
-            <div className="space-y-4">
-              {challenges.map(challenge => (
-                <div key={challenge.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                    <div>
-                      <h4 className="font-heading font-extrabold text-gray-900">{challenge.title}</h4>
-                      <div className="flex flex-wrap gap-4 mt-2">
-                        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
-                          <Clock className="w-3.5 h-3.5" /> {challenge.timeLeft} left
-                        </span>
-                        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
-                          <User className="w-3.5 h-3.5" /> {challenge.participants} joined
-                        </span>
-                      </div>
-                    </div>
-                    <div className="sm:text-right">
-                      <p className="text-[10px] uppercase font-bold text-gray-400">Prize Pool</p>
-                      <p className="text-lg font-black text-pink-accent font-heading">{challenge.prize}</p>
-                    </div>
+        {/* Main Challenges Section */}
+        <section className="mb-12">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="font-heading text-2xl font-black text-gray-900">Active Arena Challenges</h2>
+            <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-gray-200 transition-colors">
+              Filter by Category
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {challenges.map(challenge => (
+              <div key={challenge.id} className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+                <div className="p-6 flex-1">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[10px] font-black text-pink-accent uppercase tracking-tighter bg-pink-50 px-2 py-1 rounded-md">
+                      {challenge.category}
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] text-gray-400 font-bold">
+                      <Clock className="w-3 h-3" /> {challenge.timeLeft}
+                    </span>
                   </div>
-                  <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <span className="text-sm font-bold text-gray-900">Entry: {challenge.entry}</span>
-                    <button className="w-full sm:w-auto bg-gray-900 text-white px-6 py-2.5 rounded-full font-heading font-bold text-xs hover:bg-pink-accent transition-colors flex items-center justify-center gap-2">
-                      Enter Arena <ArrowUpRight className="w-4 h-4" />
-                    </button>
+                  <h4 className="font-heading font-extrabold text-gray-900 text-lg leading-tight mb-2">{challenge.title}</h4>
+                  <p className="text-gray-400 text-xs font-light">Test your skills against {challenge.participants} other Boss Ladies.</p>
+                  
+                  <div className="mt-6 pt-6 border-t border-gray-50 flex justify-between items-end">
+                    <div>
+                      <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Grand Prize</p>
+                      <p className="text-xl font-black text-gray-900 font-heading">{challenge.prize}</p>
+                    </div>
+                    <div className="text-right">
+                       <p className="text-[10px] font-bold text-gray-400">Entry</p>
+                       <p className="text-sm font-bold text-pink-accent">{challenge.entry}</p>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-heading text-xl font-black text-gray-900">Your Mentorship Feed</h2>
-            </div>
-            <div className="bg-gray-900 rounded-[2.5rem] p-6 sm:p-8 text-white relative overflow-hidden">
-              <div className="relative z-10">
-                <span className="bg-cyan-accent text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block">Featured Tool</span>
-                <h3 className="font-heading text-xl sm:text-2xl font-black mb-4">Leveraging AI for <br/>Strategic Fashion Buying</h3>
-                <p className="text-gray-400 font-light mb-8 max-w-xs text-sm sm:text-base">Learn how to use data models to predict next season's trends and maximize your ROI.</p>
-                <button className="w-full sm:w-auto bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-cyan-accent transition-colors">
-                  Start Learning
+                <button className="w-full bg-gray-900 text-white py-4 font-heading font-bold text-sm hover:bg-pink-accent transition-colors flex items-center justify-center gap-2">
+                  Enter Arena <ArrowUpRight className="w-4 h-4" />
                 </button>
               </div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-accent/20 rounded-full blur-3xl"></div>
+            ))}
+          </div>
+        </section>
+
+        {/* Bottom Section: Educational Knowledge Feed */}
+        <section>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="font-heading text-xl font-black text-gray-900">Knowledge Base</h2>
+            <button className="text-pink-accent text-sm font-bold hover:underline">View All Lessons</button>
+          </div>
+          <div className="bg-white rounded-[2.5rem] p-4 border border-gray-100 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="md:w-1/3 h-48 rounded-[2rem] overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800" 
+                  alt="AI Course" 
+                  className="w-full h-full object-cover" 
+                 
+                />
+              </div>
+              <div className="flex-1 py-2 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="bg-cyan-accent/10 text-cyan-accent text-[10px] font-black px-3 py-1 rounded-full uppercase">Featured Module</span>
+                </div>
+                <h3 className="font-heading text-2xl font-black text-gray-900 mb-3">Strategic Fashion Buying with AI</h3>
+                <p className="text-gray-500 font-light mb-6 text-sm md:text-base">
+                  Master the theory behind data models to predict next season's trends. Completing this module unlocks the "ROI Specialist" Arena Badge.
+                </p>
+                <div className="flex items-center gap-4">
+                  <button className="bg-gray-900 text-white px-8 py-3 rounded-full font-heading font-black text-xs hover:bg-cyan-accent hover:text-black transition-colors">
+                    Start Learning
+                  </button>
+                  <span className="text-gray-400 text-xs font-bold">Estimated: 12 mins</span>
+                </div>
+              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </main>
 
       {/* Sidebar Overlay for Mobile */}
