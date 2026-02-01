@@ -1,19 +1,21 @@
 <?php
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *"); // Allow React to access this API
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow React to access this API
 
 
 // 1. Configuration (Get these from Safaricom Developer Portal)
-$consumerKey = 'YOUR_CONSUMER_KEY'; 
-$consumerSecret = 'YOUR_CONSUMER_SECRET';
+$consumerKey = 'akcWv3G4OZFH80IKllLMCznjuARTuzDCLtacrNrBCGzehqTB'; 
+$consumerSecret = 'MW8thcEwiboXRTBsQqaRLnZA74zCUib130qBO2jAHfcTeUAIAhf92uSla43uJ355';
 $BusinessShortCode = '174379'; // Test Paybill
 $Passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
-$callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev /backend/callback.php'; // Must be a live HTTPS URL
+$callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev/backend/callback.php'; // Must be a live HTTPS URL
 
 // 2. Get data from Dashboard.tsx
 $input = json_decode(file_get_contents('php://input'), true);
 $amount = $input['amount'] ?? 20;
-$phone = "2547XXXXXXXX"; // In production, get this from user profile/input
+$phone = "254791353785"; // In production, get this from user profile/input
 
 // 3. Generate Access Token
 $headers = ['Content-Type: application/json; charset=utf8'];
