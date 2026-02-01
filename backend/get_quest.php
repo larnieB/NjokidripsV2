@@ -2,6 +2,24 @@
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *"); // Allow React to access this API
 
+require_once 'auth_helper.php';
+
+$headers = apache_request_headers();
+$authHeader = $headers['Authorization'] ?? '';
+
+if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+    $userData = validate_jwt($matches[1]);
+    if (!$userData) {
+        http_response_code(401);
+        echo json_encode(["error" => "Unauthorized: Invalid Token"]);
+        exit;
+    }
+} else {
+    http_response_code(401);
+    echo json_encode(["error" => "Unauthorized: Token missing"]);
+    exit;
+}
+
 // Database connection details
 $host = "localhost";
 $user = "root";

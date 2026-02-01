@@ -16,15 +16,31 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+  // components/AuthModal.tsx update
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  
+  try {
+    const response = await fetch('http://localhost:8080/NjokidripsV2/backend/login.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const result = await response.json();
+    if (result.status === 'success') {
+      localStorage.setItem('token', result.token); // Store token
       onSuccess();
-    }, 1200);
-  };
+    } else {
+      alert(result.message);
+    }
+  } catch (error) {
+    console.error("Login error", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">

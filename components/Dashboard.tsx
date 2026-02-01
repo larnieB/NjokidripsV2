@@ -119,21 +119,25 @@ const verifyPaymentStatus = async (checkoutId: string) => {
 };
 
 useEffect(() => {
-    const fetchDailyQuest = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/NjokidripsV2/backend/get_quest.php');
-        const data = await response.json();
-        
-        // Update the state with what the PHP script found
-        setDailyQuest({
-          title: data.title,
-          description: data.description,
-          points: data.points
-        });
-      } catch (error) {
-        console.error("Could not load daily quest", error);
+   // Dashboard.tsx update for fetchDailyQuest
+const fetchDailyQuest = async () => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch('http://localhost:8080/NjokidripsV2/backend/get_quest.php', {
+      headers: {
+        'Authorization': `Bearer ${token}` // Send token to backend
       }
-    };
+    });
+    const data = await response.json();
+    setDailyQuest({
+      title: data.title,
+      description: data.description,
+      points: data.points
+    });
+  } catch (error) {
+    console.error("Could not load daily quest", error);
+  }
+};
 
     fetchDailyQuest();
   }, []); // The empty brackets [] mean "run only once on load"
