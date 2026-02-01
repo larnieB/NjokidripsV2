@@ -3,8 +3,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$secret_key = "YOUR_SUPER_SECRET_KEY"; // Change this and keep it safe
-
+$secret_key = "a_very_long_and_secure_secret_key_32_chars_plus";
 function generate_jwt($user_id) {
     global $secret_key;
     $payload = [
