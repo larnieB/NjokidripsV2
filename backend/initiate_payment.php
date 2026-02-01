@@ -5,13 +5,28 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow React to access this API
 
 
-// 1. Configuration (Get these from Safaricom Developer Portal)
-$consumerKey = 'akcWv3G4OZFH80IKllLMCznjuARTuzDCLtacrNrBCGzehqTB'; 
-$consumerSecret = 'MW8thcEwiboXRTBsQqaRLnZA74zCUib130qBO2jAHfcTeUAIAhf92uSla43uJ355';
-$BusinessShortCode = '174379'; // Test Paybill
-$Passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
-$callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev/backend/callback.php'; // Must be a live HTTPS URL
 
+// Function to manually parse .env file
+function loadEnv($path) {
+    if (!file_exists($path)) return;
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $_ENV[trim($name)] = trim($value);
+    }
+}
+
+// Load the .env file from the root directory
+loadEnv(__DIR__ . '/../.env');
+
+// Retrieve credentials securely
+$consumerKey = $_ENV['MPESA_CONSUMER_KEY'] ?? ''; 
+$consumerSecret = $_ENV['MPESA_CONSUMER_SECRET'] ?? '';
+$BusinessShortCode = $_ENV['MPESA_BUSINESS_SHORTCODE'] ?? '';
+$Passkey = $_ENV['MPESA_PASSKEY'] ?? '';
+
+// ... rest of your existing logic remains the same ...
 // 2. Get data from Dashboard.tsx
 $input = json_decode(file_get_contents('php://input'), true);
 $amount = $input['amount'] ?? 20;
