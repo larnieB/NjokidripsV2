@@ -28,6 +28,11 @@ $input = json_decode(file_get_contents('php://input'), true);
 $amount = $input['amount'] ?? 1;
 $phone = "254791353785";
 
+
+// initiate_payment.php
+$checkSql = "SELECT checkout_request_id FROM payments WHERE phone = ? AND status = 'PENDING' AND created_at > NOW() - INTERVAL 1 MINUTE";
+// Only proceed with the STK push if no active pending request is found.
+
 // 3. Generate Access Token
 $headers = ['Content-Type: application/json; charset=utf8'];
 $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';

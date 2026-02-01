@@ -33,6 +33,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     description: "Fetching today's challenge...",
     points: 0
   });
+  const [isPaying, setIsPaying] = useState(false);
 
   // Expanded mock data for challenges to emphasize the "Interactive" focus
   const challenges = [
@@ -71,11 +72,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   // 2. Add the function here
   // Inside Dashboard.tsx
 const handlePaymentInitiation = async (challengeId: number) => {
+  if (isPaying) return; 
+  setIsPaying(true);
   try {
     const response = await fetch('http://localhost:8080/NjokidripsV2/backend/initiate_payment.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: 20 })
+      body: JSON.stringify({ amount: 1 })
     });
 
     const result = await response.json();
@@ -89,6 +92,9 @@ const handlePaymentInitiation = async (challengeId: number) => {
     }
   } catch (error) {
     console.error("Payment initiation error", error);
+  }
+  finally {
+    setIsPaying(false);
   }
 };
 
@@ -239,10 +245,10 @@ useEffect(() => {
                 <button 
   onClick={() => {
     // Manually define the entry requirements for the Daily Quest
-    const dailyQuestEntry = "Ksh 20"; 
+    const dailyQuestEntry = "Ksh 1"; 
     const dailyQuestId = 999; // Unique ID for today's quest
 
-    if (dailyQuestEntry === "Ksh 20" && !isPaid) {
+    if (dailyQuestEntry === "Ksh 1" && !isPaid) {
       handlePaymentInitiation(dailyQuestId);
     } else {
       setActiveChallenge(true);
@@ -250,7 +256,7 @@ useEffect(() => {
   }}
   className="mt-auto w-fit bg-white text-black px-8 py-3 rounded-full font-heading font-black text-sm hover:bg-pink-accent hover:text-white transition-all flex items-center gap-2"
 >
-  {!isPaid ? 'Pay Ksh 20 to Begin' : 'Begin Task'} <ChevronRight className="w-4 h-4" />
+  {!isPaid ? 'Pay Ksh 1 to Begin' : 'Begin Task'} <ChevronRight className="w-4 h-4" />
 </button>
                 </div>
                 <div className="absolute top-0 right-0 w-64 h-64 bg-pink-accent/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-pink-accent/20 transition-colors"></div>
