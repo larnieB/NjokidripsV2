@@ -69,10 +69,27 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($curl_post_data));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 $response = json_decode(curl_exec($curl));
 
-// 5. Respond to Frontend
+// 5. Respond to Frontend and Save to DB
 if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
+    // Database connection details
+    $host = "localhost";
+    $user = "root";
+    $pass = "";
+    $db   = "njoki_drips_db";
+    $conn = new mysqli($host, $user, $pass, $db);
+
+    // Capture unique IDs from the Safaricom response
+    $checkoutRequestID = $response->CheckoutRequestID;
+    $merchantRequestID = $response->MerchantRequestID;
+
+    // INSERT the initial record so callback.php has a row to UPDATE later
+    $sql = "INSERT INTO payments (checkout_request_id, merchant_request_id, amount, phone, status) 
+            VALUES ('$checkoutRequestID', '$merchantRequestID', '$amount', '$phone', 'PENDING')";
+    
+    $conn->query($sql);
+    $conn->close();
+
     echo json_encode(["status" => "success", "message" => "Check your phone for the M-Pesa prompt."]);
 } else {
     echo json_encode(["status" => "error", "message" => "Could not initiate payment."]);
 }
-?>
