@@ -18,7 +18,9 @@ function loadEnv($path) {
 }
 
 // Load the .env file from the root directory
-loadEnv(__DIR__ . '/../.env');
+loadEnv(__DIR__ . '/../.env.local');
+
+$callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev/NjokidripsV2/backend/callback.php';
 
 // Retrieve credentials securely
 $consumerKey = $_ENV['MPESA_CONSUMER_KEY'] ?? ''; 
@@ -26,12 +28,10 @@ $consumerSecret = $_ENV['MPESA_CONSUMER_SECRET'] ?? '';
 $BusinessShortCode = $_ENV['MPESA_BUSINESS_SHORTCODE'] ?? '';
 $Passkey = $_ENV['MPESA_PASSKEY'] ?? '';
 
-// ... rest of your existing logic remains the same ...
-// 2. Get data from Dashboard.tsx
+
 $input = json_decode(file_get_contents('php://input'), true);
 $amount = $input['amount'] ?? 20;
-$phone = "254791353785"; // In production, get this from user profile/input
-
+$phone = "254724474398";
 // 3. Generate Access Token
 $headers = ['Content-Type: application/json; charset=utf8'];
 $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
