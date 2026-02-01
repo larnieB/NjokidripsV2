@@ -31,7 +31,7 @@ $Passkey = $_ENV['MPESA_PASSKEY'] ?? '';
 
 $input = json_decode(file_get_contents('php://input'), true);
 $amount = $input['amount'] ?? 20;
-$phone = "254724474398";
+$phone = "254791353785";
 // 3. Generate Access Token
 $headers = ['Content-Type: application/json; charset=utf8'];
 $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
