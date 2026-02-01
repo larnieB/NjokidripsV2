@@ -69,29 +69,48 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   ];
 
   // 2. Add the function here
-  const handlePaymentInitiation = async (challengeId: number) => {
+  // Inside Dashboard.tsx
+const handlePaymentInitiation = async (challengeId: number) => {
   try {
     const response = await fetch('http://localhost:8080/NjokidripsV2/backend/initiate_payment.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        challengeId: challengeId,
-        amount: 20 
-      })
+      body: JSON.stringify({ amount: 20 })
     });
 
     const result = await response.json();
     
     if (result.status === 'success') {
-      setIsPaid(true);
-      setActiveChallenge(true);
-      alert("Payment confirmed! Good luck in the Arena.");
+      alert("Prompt sent! Please enter your PIN. Verifying payment...");
+      // Poll the database until status is SUCCESS or FAILED
+      verifyPaymentStatus(result.checkout_id); 
     } else {
-      alert("Payment failed: " + result.message);
+      alert("Error: " + result.message);
     }
   } catch (error) {
-    console.error("Error connecting to PHP backend:", error);
+    console.error("Payment initiation error", error);
   }
+};
+
+const verifyPaymentStatus = async (checkoutId: string) => {
+  const interval = setInterval(async () => {
+    try {
+      const check = await fetch(`http://localhost:8080/NjokidripsV2/backend/check_status.php?id=${checkoutId}`);
+      const statusResult = await check.json();
+      
+      if (statusResult.status === 'SUCCESS') {
+        clearInterval(interval);
+        setIsPaid(true); // Unlock the quest
+        setActiveChallenge(true);
+        alert("Payment Verified! Quest Unlocked.");
+      } else if (statusResult.status === 'FAILED') {
+        clearInterval(interval);
+        alert("Payment failed or was cancelled.");
+      }
+    } catch (e) {
+      console.error("Polling error", e);
+    }
+  }, 3000); // Check every 3 seconds
 };
 
 useEffect(() => {

@@ -69,27 +69,34 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($curl_post_data));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 $response = json_decode(curl_exec($curl));
 
-// 5. Respond to Frontend and Save to DB
-if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
-    // Database connection details
-    $host = "localhost";
-    $user = "root";
-    $pass = "";
-    $db   = "njoki_drips_db";
-    $conn = new mysqli($host, $user, $pass, $db);
+// ... (existing credential and token generation code)
 
-    // Capture unique IDs from the Safaricom response
+$response = json_decode(curl_exec($curl));
+
+// Only proceed if Safaricom returns a successful ResponseCode (0)
+if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
+    $conn = new mysqli("localhost", "root", "", "njoki_drips_db");
+    
     $checkoutRequestID = $response->CheckoutRequestID;
     $merchantRequestID = $response->MerchantRequestID;
 
-    // INSERT the initial record so callback.php has a row to UPDATE later
-    $sql = "INSERT INTO payments (checkout_request_id, merchant_request_id, amount, phone, status) 
-            VALUES ('$checkoutRequestID', '$merchantRequestID', '$amount', '$phone', 'PENDING')";
+    // Create the initial PENDING record
+    $stmt = $conn->prepare("INSERT INTO payments (checkout_request_id, merchant_request_id, amount, phone, status) VALUES (?, ?, ?, ?, 'PENDING')");
+    $stmt->bind_param("ssis", $checkoutRequestID, $merchantRequestID, $amount, $phone);
+    $stmt->execute();
     
-    $conn->query($sql);
+    echo json_encode([
+        "status" => "success", 
+        "checkout_id" => $checkoutRequestID, // Return the ID for React to poll
+        "message" => "Check your phone for the M-Pesa prompt."
+    ]);
+    
+    $stmt->close();
     $conn->close();
-
-    echo json_encode(["status" => "success", "message" => "Check your phone for the M-Pesa prompt."]);
 } else {
-    echo json_encode(["status" => "error", "message" => "Could not initiate payment."]);
+    // If ResponseCode is not 0, the push was not successfully initiated
+    echo json_encode([
+        "status" => "error", 
+        "message" => "Safaricom initiation failed: " . ($response->ResponseDescription ?? 'Unknown error')
+    ]);
 }
