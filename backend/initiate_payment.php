@@ -2,9 +2,7 @@
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Allow React to access this API
-
-
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 // Function to manually parse .env file
 function loadEnv($path) {
@@ -17,21 +15,19 @@ function loadEnv($path) {
     }
 }
 
-// Load the .env file from the root directory
 loadEnv(__DIR__ . '/../.env.local');
 
 $callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev/NjokidripsV2/backend/callback.php';
 
-// Retrieve credentials securely
 $consumerKey = $_ENV['MPESA_CONSUMER_KEY'] ?? ''; 
 $consumerSecret = $_ENV['MPESA_CONSUMER_SECRET'] ?? '';
 $BusinessShortCode = $_ENV['MPESA_BUSINESS_SHORTCODE'] ?? '';
 $Passkey = $_ENV['MPESA_PASSKEY'] ?? '';
 
-
 $input = json_decode(file_get_contents('php://input'), true);
-$amount = $input['amount'] ?? 20;
+$amount = $input['amount'] ?? 1;
 $phone = "254791353785";
+
 // 3. Generate Access Token
 $headers = ['Content-Type: application/json; charset=utf8'];
 $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
@@ -40,8 +36,24 @@ curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 curl_setopt($curl, CURLOPT_HEADER, FALSE);
 curl_setopt($curl, CURLOPT_USERPWD, $consumerKey . ':' . $consumerSecret);
-$result = json_decode(curl_exec($curl));
-$accessToken = $result->access_token;
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+$curl_result = curl_exec($curl);
+
+if ($curl_result === false) {
+    $error = curl_error($curl);
+    echo json_encode(["status" => "error", "message" => "cURL Error: " . $error]);
+    curl_close($curl);
+    exit;
+}
+$result = json_decode($curl_result);
+curl_close($curl);
+
+if (isset($result->access_token)) {
+    $accessToken = $result->access_token;
+} else {
+    echo json_encode(["status" => "error", "message" => "Failed to generate access token."]);
+    exit;
+}
 
 // 4. Initiate STK Push
 $timestamp = date('YmdHis');
@@ -67,13 +79,12 @@ curl_setopt($curl, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken,
 curl_setopt($curl, CURLOPT_POST, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($curl_post_data));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-$response = json_decode(curl_exec($curl));
 
-// ... (existing credential and token generation code)
+// FIX: Execute the request ONLY ONCE
+$stk_curl_result = curl_exec($curl);
+$response = json_decode($stk_curl_result);
+curl_close($curl); 
 
-$response = json_decode(curl_exec($curl));
-
-// Only proceed if Safaricom returns a successful ResponseCode (0)
 if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
     $conn = new mysqli("localhost", "root", "", "njoki_drips_db");
     
@@ -87,16 +98,16 @@ if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
     
     echo json_encode([
         "status" => "success", 
-        "checkout_id" => $checkoutRequestID, // Return the ID for React to poll
+        "checkout_id" => $checkoutRequestID, 
         "message" => "Check your phone for the M-Pesa prompt."
     ]);
     
     $stmt->close();
     $conn->close();
 } else {
-    // If ResponseCode is not 0, the push was not successfully initiated
     echo json_encode([
         "status" => "error", 
         "message" => "Safaricom initiation failed: " . ($response->ResponseDescription ?? 'Unknown error')
     ]);
 }
+?>
