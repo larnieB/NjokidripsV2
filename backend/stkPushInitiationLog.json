@@ -1,0 +1,181 @@
+2026-02-01 09:07:57 - Response: {
+            "MerchantRequestID":"8c09-4df1-819e-84ed6a6f1246366",
+            "CheckoutRequestID":"ws_CO_01022026110803482791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:07:59 - Response: {
+            "MerchantRequestID":"3324-4c93-8afd-03559bef40f612445",
+            "CheckoutRequestID":"ws_CO_01022026110805543791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:08:30 - Response: {
+            "MerchantRequestID":"3324-4c93-8afd-03559bef40f612451",
+            "CheckoutRequestID":"ws_CO_01022026110837117791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:08:31 - Response: <html style="height:100%"><head><META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"><meta name="format-detection" content="telephone=no"><meta name="viewport" content="initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"></head><body style="margin:0px;height:100%"><iframe id="main-iframe" src="/_Incapsula_Resource?CWUDNSAI=23&xinfo=46-104250072-0%200NNN%20RT%281769933318280%20443%29%20q%280%20-1%20-1%20-1%29%20r%280%20-1%29%20B15%2811%2c6926146%2c0%29%20U6&incident_id=922000251027964574-570548506542605934&edet=15&cinfo=0b000000&rpinfo=0&cip=105.163.0.227&mth=POST" frameborder=0 width="100%" height="100%" marginheight="0px" marginwidth="0px">Request unsuccessful. Incapsula incident ID: 922000251027964574-570548506542605934</iframe></body></html>
+2026-02-01 09:08:58 - Response: {
+            "MerchantRequestID":"ac11-4257-810b-e50d61609dce3073",
+            "CheckoutRequestID":"ws_CO_01022026110904641791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:08:59 - Response: <html style="height:100%"><head><META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"><meta name="format-detection" content="telephone=no"><meta name="viewport" content="initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"></head><body style="margin:0px;height:100%"><iframe id="main-iframe" src="/_Incapsula_Resource?CWUDNSAI=23&xinfo=45-97106942-0%200NNN%20RT%281769933345897%20407%29%20q%280%20-1%20-1%20-1%29%20r%280%20-1%29%20B15%2811%2c6926146%2c0%29%20U6&incident_id=922000251027964574-530643638977955437&edet=15&cinfo=0b000000&rpinfo=0&cip=105.163.0.227&mth=POST" frameborder=0 width="100%" height="100%" marginheight="0px" marginwidth="0px">Request unsuccessful. Incapsula incident ID: 922000251027964574-530643638977955437</iframe></body></html>
+2026-02-01 09:11:26 - Response: {
+            "MerchantRequestID":"8c09-4df1-819e-84ed6a6f1246384",
+            "CheckoutRequestID":"ws_CO_01022026111132948791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:11:28 - Response: {
+            "MerchantRequestID":"ac11-4257-810b-e50d61609dce3090",
+            "CheckoutRequestID":"ws_CO_01022026111134375791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:12:52 - Response: {
+            "MerchantRequestID":"3324-4c93-8afd-03559bef40f612495",
+            "CheckoutRequestID":"ws_CO_01022026111258801791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:12:54 - Response: {
+            "MerchantRequestID":"3aed-4728-8c19-388c8e82302614489",
+            "CheckoutRequestID":"ws_CO_01022026111300910791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:13:50 - Response: {
+            "MerchantRequestID":"8c09-4df1-819e-84ed6a6f1246389",
+            "CheckoutRequestID":"ws_CO_01022026111357257791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:13:52 - Response: {
+                    "requestId":"8c09-4df1-819e-84ed6a6f1246390",
+                    "errorCode": "500.003.02",
+                    "errorMessage": "System is busy. Please try again in few minutes."
+                }
+            
+2026-02-01 09:14:31 - Response: {
+            "MerchantRequestID":"3aed-4728-8c19-388c8e82302614496",
+            "CheckoutRequestID":"ws_CO_01022026111438145791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:14:33 - Response: <html style="height:100%"><head><META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"><meta name="format-detection" content="telephone=no"><meta name="viewport" content="initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"></head><body style="margin:0px;height:100%"><iframe id="main-iframe" src="/_Incapsula_Resource?CWUDNSAI=23&xinfo=50-146534097-0%200NNN%20RT%281769933679394%20458%29%20q%280%20-1%20-1%20-1%29%20r%280%20-1%29%20B15%2811%2c6926146%2c0%29%20U6&incident_id=922000251027964574-800310543706097266&edet=15&cinfo=0b000000&rpinfo=0&cip=105.163.0.227&mth=POST" frameborder=0 width="100%" height="100%" marginheight="0px" marginwidth="0px">Request unsuccessful. Incapsula incident ID: 922000251027964574-800310543706097266</iframe></body></html>
+2026-02-01 09:15:19 - Response: {
+            "MerchantRequestID":"ac11-4257-810b-e50d61609dce3112",
+            "CheckoutRequestID":"ws_CO_01022026111526123791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:15:20 - Response: <html style="height:100%"><head><META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"><meta name="format-detection" content="telephone=no"><meta name="viewport" content="initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"></head><body style="margin:0px;height:100%"><iframe id="main-iframe" src="/_Incapsula_Resource?CWUDNSAI=23&xinfo=49-131419723-0%200NNN%20RT%281769933727244%20453%29%20q%280%20-1%20-1%20-1%29%20r%280%20-1%29%20B15%2811%2c6926146%2c0%29%20U6&incident_id=922000251027964574-717411348406470257&edet=15&cinfo=0b000000&rpinfo=0&cip=105.163.0.227&mth=POST" frameborder=0 width="100%" height="100%" marginheight="0px" marginwidth="0px">Request unsuccessful. Incapsula incident ID: 922000251027964574-717411348406470257</iframe></body></html>
+2026-02-01 09:16:33 - Response: {
+            "MerchantRequestID":"3324-4c93-8afd-03559bef40f612532",
+            "CheckoutRequestID":"ws_CO_01022026111639852791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:16:35 - Response: {
+            "MerchantRequestID":"3c1e-4819-8ba0-aae442b5ced12835",
+            "CheckoutRequestID":"ws_CO_01022026111641641791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:17:33 - Response: {
+            "MerchantRequestID":"3aed-4728-8c19-388c8e82302614511",
+            "CheckoutRequestID":"ws_CO_01022026111740050791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:17:35 - Response: {
+                    "requestId":"3aed-4728-8c19-388c8e82302614513",
+                    "errorCode": "500.003.02",
+                    "errorMessage": "System is busy. Please try again in few minutes."
+                }
+            
+2026-02-01 09:21:09 - Response: {
+            "MerchantRequestID":"3aed-4728-8c19-388c8e82302614532",
+            "CheckoutRequestID":"ws_CO_01022026112115678791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:21:11 - Response: {
+                    "requestId":"3aed-4728-8c19-388c8e82302614533",
+                    "errorCode": "500.003.02",
+                    "errorMessage": "System is busy. Please try again in few minutes."
+                }
+            
+2026-02-01 09:21:20 - Response: {
+            "MerchantRequestID":"3324-4c93-8afd-03559bef40f612574",
+            "CheckoutRequestID":"ws_CO_01022026112126968791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:21:21 - Response: <html style="height:100%"><head><META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"><meta name="format-detection" content="telephone=no"><meta name="viewport" content="initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"></head><body style="margin:0px;height:100%"><iframe id="main-iframe" src="/_Incapsula_Resource?CWUDNSAI=23&xinfo=52-174614637-0%200NNN%20RT%281769934088216%20546%29%20q%280%20-1%20-1%20-1%29%20r%280%20-1%29%20B15%2811%2c6926146%2c0%29%20U6&incident_id=922000251027964574-952477446842222196&edet=15&cinfo=0b000000&rpinfo=0&cip=105.163.0.227&mth=POST" frameborder=0 width="100%" height="100%" marginheight="0px" marginwidth="0px">Request unsuccessful. Incapsula incident ID: 922000251027964574-952477446842222196</iframe></body></html>
+2026-02-01 09:24:28 - Response: {
+            "MerchantRequestID":"3324-4c93-8afd-03559bef40f612593",
+            "CheckoutRequestID":"ws_CO_01022026112435009791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:24:30 - Response: {
+                    "requestId":"3324-4c93-8afd-03559bef40f612594",
+                    "errorCode": "500.003.02",
+                    "errorMessage": "System is busy. Please try again in few minutes."
+                }
+            
+2026-02-01 09:25:26 - Response: {
+            "MerchantRequestID":"3c1e-4819-8ba0-aae442b5ced12902",
+            "CheckoutRequestID":"ws_CO_01022026112533381791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        
+2026-02-01 09:25:29 - Response: {
+            "MerchantRequestID":"8c09-4df1-819e-84ed6a6f1246458",
+            "CheckoutRequestID":"ws_CO_01022026112535855791353785",
+            "ResponseCode": "0",
+            "ResponseDescription":"Success. Request accepted for processing",
+            "CustomerMessage":"Success. Request accepted for processing"
+        }
+        

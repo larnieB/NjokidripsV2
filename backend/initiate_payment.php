@@ -85,6 +85,12 @@ $stk_curl_result = curl_exec($curl);
 $response = json_decode($stk_curl_result);
 curl_close($curl); 
 
+// Detailed Logging for Debugging
+$logFile = "stkPushInitiationLog.json"; // Different from the callback log
+$log = fopen($logFile, "a");
+fwrite($log, date('Y-m-d H:i:s') . " - Response: " . $stk_curl_result . PHP_EOL);
+fclose($log);
+
 if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
     $conn = new mysqli("localhost", "root", "", "njoki_drips_db");
     
@@ -105,6 +111,16 @@ if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
     $stmt->close();
     $conn->close();
 } else {
+
+       // Refine error reporting to capture specific Safaricom messages
+    $errorMessage = "Unknown error";
+    
+    if (isset($response->errorMessage)) {
+        $errorMessage = $response->errorMessage; // Common for auth or validation errors
+    } elseif (isset($response->ResponseDescription)) {
+        $errorMessage = $response->ResponseDescription; // Common for processing errors
+    }
+
     echo json_encode([
         "status" => "error", 
         "message" => "Safaricom initiation failed: " . ($response->ResponseDescription ?? 'Unknown error')
