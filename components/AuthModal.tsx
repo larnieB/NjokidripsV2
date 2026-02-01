@@ -16,27 +16,36 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
 
   if (!isOpen) return null;
 
-  // components/AuthModal.tsx update
-const handleSubmit = async (e: React.FormEvent) => {
+ const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsLoading(true);
-  
+
+  const endpoint = isLogin 
+    ? 'http://localhost:8080/NjokidripsV2/backend/login.php' 
+    : 'http://localhost:8080/NjokidripsV2/backend/signup.php';
+
   try {
-    const response = await fetch('http://localhost:8080/NjokidripsV2/backend/login.php', {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-    
+
     const result = await response.json();
+
     if (result.status === 'success') {
-      localStorage.setItem('token', result.token); // Store token
-      onSuccess();
+      if (isLogin) {
+        localStorage.setItem('token', result.token);
+        onSuccess();
+      } else {
+        alert("Registration successful! Please log in.");
+        setIsLogin(true); // Switch to login view after signup
+      }
     } else {
       alert(result.message);
     }
   } catch (error) {
-    console.error("Login error", error);
+    console.error("Auth error:", error);
   } finally {
     setIsLoading(false);
   }
