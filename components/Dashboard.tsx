@@ -72,28 +72,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   // 2. Add the function here
   // Inside Dashboard.tsx
 const handlePaymentInitiation = async (challengeId: number) => {
-  if (isPaying) return; 
+  if (isPaying || isPaid) return; // Strict guard
+  
   setIsPaying(true);
   try {
     const response = await fetch('http://localhost:8080/NjokidripsV2/backend/initiate_payment.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: 1 })
+      body: JSON.stringify({ amount: 1, phone: "254791353785" }) // Ensure phone is passed if needed
     });
 
     const result = await response.json();
     
     if (result.status === 'success') {
-      alert("Prompt sent! Please enter your PIN. Verifying payment...");
-      // Poll the database until status is SUCCESS or FAILED
+      alert("Prompt sent! Please enter your PIN.");
       verifyPaymentStatus(result.checkout_id); 
     } else {
-      alert("Error: " + result.message);
+      alert("Notice: " + result.message);
+      setIsPaying(false); // Reset only if initiation failed
     }
   } catch (error) {
     console.error("Payment initiation error", error);
-  }
-  finally {
     setIsPaying(false);
   }
 };

@@ -17,23 +17,47 @@ function loadEnv($path) {
 
 loadEnv(__DIR__ . '/../.env.local');
 
-$callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev/NjokidripsV2/backend/callback.php';
+// Database connection
+$conn = new mysqli("localhost", "root", "", "njoki_drips_db");
+if ($conn->connect_error) {
+    die(json_encode(["status" => "error", "message" => "Database connection failed"]));
+}
 
+$input = json_decode(file_get_contents('php://input'), true);
+$amount = $input['amount'] ?? 1;
+$phone = "254791353785"; // Your hardcoded testing phone
+
+/**
+ * PREVENTION OF DUPLICATE TRANSACTIONS
+ * Check if there is already a PENDING request for this phone number created in the last 60 seconds.
+ */
+$checkSql = "SELECT checkout_request_id FROM payments WHERE phone = ? AND status = 'PENDING' AND created_at > NOW() - INTERVAL 1 MINUTE";
+$stmt = $conn->prepare($checkSql);
+$stmt->bind_param("s", $phone);
+$stmt->execute();
+$checkResult = $stmt->get_result();
+
+if ($checkResult->num_rows > 0) {
+    $existing = $checkResult->fetch_assoc();
+    echo json_encode([
+        "status" => "success", 
+        "checkout_id" => $existing['checkout_request_id'], 
+        "message" => "A request is already on your phone. Please enter your PIN."
+    ]);
+    $stmt->close();
+    $conn->close();
+    exit;
+}
+$stmt->close();
+
+// M-Pesa Credentials
 $consumerKey = $_ENV['MPESA_CONSUMER_KEY'] ?? ''; 
 $consumerSecret = $_ENV['MPESA_CONSUMER_SECRET'] ?? '';
 $BusinessShortCode = $_ENV['MPESA_BUSINESS_SHORTCODE'] ?? '';
 $Passkey = $_ENV['MPESA_PASSKEY'] ?? '';
+$callbackUrl = 'https://humblingly-widowly-joni.ngrok-free.dev/NjokidripsV2/backend/callback.php';
 
-$input = json_decode(file_get_contents('php://input'), true);
-$amount = $input['amount'] ?? 1;
-$phone = "254791353785";
-
-
-// initiate_payment.php
-$checkSql = "SELECT checkout_request_id FROM payments WHERE phone = ? AND status = 'PENDING' AND created_at > NOW() - INTERVAL 1 MINUTE";
-// Only proceed with the STK push if no active pending request is found.
-
-// 3. Generate Access Token
+// 1. Generate Access Token
 $headers = ['Content-Type: application/json; charset=utf8'];
 $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
 $curl = curl_init($url);
@@ -43,24 +67,16 @@ curl_setopt($curl, CURLOPT_HEADER, FALSE);
 curl_setopt($curl, CURLOPT_USERPWD, $consumerKey . ':' . $consumerSecret);
 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 $curl_result = curl_exec($curl);
-
-if ($curl_result === false) {
-    $error = curl_error($curl);
-    echo json_encode(["status" => "error", "message" => "cURL Error: " . $error]);
-    curl_close($curl);
-    exit;
-}
-$result = json_decode($curl_result);
+$token_result = json_decode($curl_result);
 curl_close($curl);
 
-if (isset($result->access_token)) {
-    $accessToken = $result->access_token;
-} else {
+if (!isset($token_result->access_token)) {
     echo json_encode(["status" => "error", "message" => "Failed to generate access token."]);
     exit;
 }
+$accessToken = $token_result->access_token;
 
-// 4. Initiate STK Push
+// 2. Initiate STK Push
 $timestamp = date('YmdHis');
 $password = base64_encode($BusinessShortCode . $Passkey . $timestamp);
 
@@ -85,24 +101,15 @@ curl_setopt($curl, CURLOPT_POST, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($curl_post_data));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-// FIX: Execute the request ONLY ONCE
-$stk_curl_result = curl_exec($curl);
-$response = json_decode($stk_curl_result);
-curl_close($curl); 
+$stk_result_raw = curl_exec($curl);
+$response = json_decode($stk_result_raw);
+curl_close($curl);
 
-// Detailed Logging for Debugging
-$logFile = "stkPushInitiationLog.json"; // Different from the callback log
-$log = fopen($logFile, "a");
-fwrite($log, date('Y-m-d H:i:s') . " - Response: " . $stk_curl_result . PHP_EOL);
-fclose($log);
-
+// 3. Log and Respond
 if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
-    $conn = new mysqli("localhost", "root", "", "njoki_drips_db");
-    
     $checkoutRequestID = $response->CheckoutRequestID;
     $merchantRequestID = $response->MerchantRequestID;
 
-    // Create the initial PENDING record
     $stmt = $conn->prepare("INSERT INTO payments (checkout_request_id, merchant_request_id, amount, phone, status) VALUES (?, ?, ?, ?, 'PENDING')");
     $stmt->bind_param("ssis", $checkoutRequestID, $merchantRequestID, $amount, $phone);
     $stmt->execute();
@@ -112,23 +119,13 @@ if (isset($response->ResponseCode) && $response->ResponseCode == "0") {
         "checkout_id" => $checkoutRequestID, 
         "message" => "Check your phone for the M-Pesa prompt."
     ]);
-    
     $stmt->close();
-    $conn->close();
 } else {
-
-       // Refine error reporting to capture specific Safaricom messages
-    $errorMessage = "Unknown error";
-    
-    if (isset($response->errorMessage)) {
-        $errorMessage = $response->errorMessage; // Common for auth or validation errors
-    } elseif (isset($response->ResponseDescription)) {
-        $errorMessage = $response->ResponseDescription; // Common for processing errors
-    }
-
     echo json_encode([
         "status" => "error", 
-        "message" => "Safaricom initiation failed: " . ($response->ResponseDescription ?? 'Unknown error')
+        "message" => "Safaricom failed: " . ($response->errorMessage ?? $response->ResponseDescription ?? 'Unknown Error')
     ]);
 }
+
+$conn->close();
 ?>
