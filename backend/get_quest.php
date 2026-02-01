@@ -11,10 +11,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 require_once 'auth_helper.php';
 
-$headers = apache_request_headers();
-$authHeader = $headers['Authorization'] ?? '';
+// backend/get_quest.php
 
-if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+// 1. Improved Auth Header Extraction
+$authHeader = null;
+if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+} elseif (isset($_SERVER['Authorization'])) {
+    $authHeader = $_SERVER['Authorization'];
+} elseif (function_exists('apache_request_headers')) {
+    $headers = apache_request_headers();
+    $authHeader = $headers['Authorization'] ?? null;
+}
+
+if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
     $userData = validate_jwt($matches[1]);
     if (!$userData) {
         http_response_code(401);
@@ -23,9 +33,10 @@ if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
     }
 } else {
     http_response_code(401);
-    echo json_encode(["error" => "Unauthorized: Token missing"]);
+    echo json_encode(["error" => "Unauthorized: Token missing. Got: " . ($authHeader ?? 'nothing')]);
     exit;
 }
+
 
 // Database connection details
 $host = "localhost";

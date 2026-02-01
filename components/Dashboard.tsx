@@ -118,29 +118,37 @@ const verifyPaymentStatus = async (checkoutId: string) => {
   }, 3000); // Check every 3 seconds
 };
 
-useEffect(() => {
-   // Dashboard.tsx update for fetchDailyQuest
-const fetchDailyQuest = async () => {
-  const token = localStorage.getItem('token');
-  try {
-    const response = await fetch('http://localhost:8080/NjokidripsV2/backend/get_quest.php', {
-      headers: {
-        'Authorization': `Bearer ${token}` // Send token to backend
-      }
-    });
-    const data = await response.json();
-    setDailyQuest({
-      title: data.title,
-      description: data.description,
-      points: data.points
-    });
-  } catch (error) {
-    console.error("Could not load daily quest", error);
-  }
-};
+// components/Dashboard.tsx
 
-    fetchDailyQuest();
-  }, []); // The empty brackets [] mean "run only once on load"
+useEffect(() => {
+  const fetchDailyQuest = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return; // Don't fetch if no token exists
+
+    try {
+      const response = await fetch('http://localhost:8080/NjokidripsV2/backend/get_quest.php', {
+        headers: {
+          'Authorization': `Bearer ${token}` 
+        }
+      });
+
+      if (!response.ok) {
+         throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setDailyQuest({
+        title: data.title || "No Title",
+        description: data.description || "No Description",
+        points: data.points || 0
+      });
+    } catch (error) {
+      console.error("Could not load daily quest", error);
+    }
+  };
+
+  fetchDailyQuest();
+}, []); // Keep empty if this component only mounts after auth is confirmed in App.tsx
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col md:flex-row relative">
