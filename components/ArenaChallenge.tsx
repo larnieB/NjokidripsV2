@@ -1,95 +1,61 @@
-import React, { useState } from 'react';
-import { CheckCircle2, Trophy, ArrowRight, RefreshCcw } from 'lucide-react';
+// components/ArenaChallenge.tsx
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, AlertTriangle, Play, RefreshCcw, Trophy } from 'lucide-react';
 
-interface ArenaChallengeProps {
-  onComplete: () => void;
-  isPaid?: boolean; // Add this prop
-}
+const ArenaChallenge: React.FC<{ onComplete: () => void, isPaid?: boolean }> = ({ onComplete }) => {
+  const [allocation, setAllocation] = useState({ Tech: 0, Fashion: 0, Healthcare: 0 });
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [result, setResult] = useState<{ win: boolean, growth: number, message: string } | null>(null);
 
-const QUESTIONS = [
-  {
-    id: 1,
-    question: "In AI strategy, what does 'Prompt Engineering' primarily refer to?",
-    options: [
-      "Building physical computer hardware",
-      "Crafting precise inputs to get high-quality outputs from AI models",
-      "Designing the electrical circuits of a server",
-      "Repairing broken software code manually"
-    ],
-    correct: 1
-  },
-  {
-    id: 2,
-    question: "When evaluating 'Fashion ROI', which metric is most critical for long-term growth?",
-    options: [
-      "Total number of likes on social media",
-      "The color of the packaging",
-      "Customer Lifetime Value (CLV) vs. Acquisition Cost",
-      "The speed of the delivery truck"
-    ],
-    correct: 2
-  },
-  {
-    id: 3,
-    question: "What is a key benefit of 'Financial Independence' for a Boss Lady?",
-    options: [
-      "Buying everything on credit",
-      "Avoiding all types of investments",
-      "The freedom to make career decisions based on values rather than necessity",
-      "Keeping all savings in a standard checking account"
-    ],
-    correct: 3
-  }
-];
+  const totalAllocated = allocation.Tech + allocation.Fashion + allocation.Healthcare;
+  const budget = 100000;
 
-const ArenaChallenge: React.FC<{ onComplete: () => void }> = ({ onComplete, isPaid }) => {
+  const handleSimulate = () => {
+    setIsSimulating(true);
+    
+    // Artificial delay for tension (Game Design Skill)
+    setTimeout(() => {
+      // Hard-to-win logic: Market volatility affects weights
+      const techGrowth = (Math.random() * 60 - 30); // -30% to +30%
+      const fashionGrowth = (Math.random() * 30 - 10); // -10% to +20%
+      const healthGrowth = (Math.random() * 10); // 0% to +10%
 
+      const finalValue = 
+        (allocation.Tech * (1 + techGrowth/100)) + 
+        (allocation.Fashion * (1 + fashionGrowth/100)) + 
+        (allocation.Healthcare * (1 + healthGrowth/100));
 
+      const roi = ((finalValue - budget) / budget) * 100;
+      const won = roi >= 15; // Requires 15% growth to win
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [score, setScore] = useState(0);
-  const [isFinished, setIsFinished] = useState(false);
-
-  const handleAnswer = (index: number) => {
-    const isCorrect = index === QUESTIONS[currentStep].correct;
-    if (isCorrect) setScore(score + 1);
-
-    if (currentStep < QUESTIONS.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      setIsFinished(true);
-    }
+      setResult({
+        win: won,
+        growth: Math.round(roi * 10) / 10,
+        message: won 
+          ? "Masterful strategy! Your empire is expanding." 
+          : roi > 10 
+            ? "So close! You were just 5% away from the target." // Near-miss logic
+            : "Market crash! Your strategy was too risky."
+      });
+      setIsSimulating(false);
+    }, 2000);
   };
 
-  if (isFinished) {
-    const passed = score === QUESTIONS.length;
+  if (result) {
     return (
-      <div className="bg-white rounded-[2.5rem] p-12 text-center shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-300">
-        {passed ? (
-          <>
-            <div className="w-20 h-20 bg-pink-50 text-pink-accent rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trophy className="w-10 h-10" />
-            </div>
-            <h2 className="font-heading text-3xl font-black text-gray-900 mb-4">Challenge Mastered!</h2>
-            <p className="text-gray-500 mb-8 font-light">Congratulations! You answered all questions correctly and earned your Arena stripes.</p>
-            <button 
-              onClick={onComplete}
-              className="bg-pink-accent text-white px-10 py-4 rounded-2xl font-heading font-bold hover:brightness-110 transition-all"
-            >
-              Back to Arena
-            </button>
-          </>
+      <div className="bg-white rounded-[2.5rem] p-12 text-center shadow-2xl animate-in zoom-in-95">
+        <div className={`text-4xl font-black mb-4 ${result.win ? 'text-green-500' : 'text-pink-accent'}`}>
+          {result.growth}% ROI
+        </div>
+        <h2 className="text-2xl font-heading font-black mb-4">{result.win ? 'Success!' : 'Mission Failed'}</h2>
+        <p className="text-gray-500 mb-8">{result.message}</p>
+        
+        {result.win ? (
+          <button onClick={onComplete} className="bg-gray-900 text-white px-10 py-4 rounded-full font-bold">Claim Prize</button>
         ) : (
-          <>
-            <h2 className="font-heading text-3xl font-black text-gray-900 mb-4">Not Quite There</h2>
-            <p className="text-gray-500 mb-8 font-light">You got {score}/{QUESTIONS.length} correct. Retake the challenge to claim your reward!</p>
-            <button 
-              onClick={() => { setCurrentStep(0); setScore(0); setIsFinished(false); }}
-              className="flex items-center gap-2 mx-auto text-pink-accent font-bold hover:underline"
-            >
-              <RefreshCcw className="w-4 h-4" /> Try Again
-            </button>
-          </>
+          <button onClick={() => setResult(null)} className="flex items-center gap-2 mx-auto text-pink-accent font-bold">
+            <RefreshCcw className="w-4 h-4" /> Re-strategize
+          </button>
         )}
       </div>
     );
@@ -98,30 +64,41 @@ const ArenaChallenge: React.FC<{ onComplete: () => void }> = ({ onComplete, isPa
   return (
     <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-gray-100">
       <div className="flex justify-between items-center mb-8">
-        <span className="text-xs font-black text-pink-accent uppercase tracking-widest">Question {currentStep + 1} of 3</span>
-        <div className="flex gap-1">
-          {QUESTIONS.map((_, i) => (
-            <div key={i} className={`h-1.5 w-8 rounded-full ${i <= currentStep ? 'bg-pink-accent' : 'bg-gray-100'}`} />
-          ))}
-        </div>
+        <h3 className="font-heading text-2xl font-black">Capital Allocation Sim</h3>
+        <div className="bg-pink-50 text-pink-accent px-4 py-1 rounded-full text-xs font-black">Target: +15% ROI</div>
       </div>
 
-      <h3 className="font-heading text-2xl font-extrabold text-gray-900 mb-8 leading-tight">
-        {QUESTIONS[currentStep].question}
-      </h3>
+      <div className="mb-8 p-6 bg-gray-950 rounded-3xl text-white">
+        <div className="text-xs text-gray-400 uppercase font-bold mb-1">Available Capital</div>
+        <div className="text-3xl font-black">Ksh { (budget - totalAllocated).toLocaleString() }</div>
+      </div>
 
-      <div className="space-y-4">
-        {QUESTIONS[currentStep].options.map((option, index) => (
-          <button
-            key={index}
-            onClick={() => handleAnswer(index)}
-            className="w-full text-left p-6 rounded-2xl border-2 border-gray-50 hover:border-pink-accent/30 hover:bg-pink-50/30 transition-all group flex justify-between items-center"
-          >
-            <span className="font-semibold text-gray-700 group-hover:text-gray-900">{option}</span>
-            <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-pink-accent group-hover:translate-x-1 transition-all" />
-          </button>
+      <div className="space-y-6">
+        {Object.keys(allocation).map((sector) => (
+          <div key={sector}>
+            <div className="flex justify-between mb-2">
+              <span className="font-bold text-gray-700">{sector}</span>
+              <span className="text-sm text-gray-400">Ksh {allocation[sector as keyof typeof allocation].toLocaleString()}</span>
+            </div>
+            <input 
+              type="range" max={budget} step={5000}
+              value={allocation[sector as keyof typeof allocation]}
+              onChange={(e) => setAllocation({...allocation, [sector]: parseInt(e.target.value)})}
+              disabled={isSimulating}
+              className="w-full accent-pink-accent"
+            />
+          </div>
         ))}
       </div>
+
+      <button 
+        onClick={handleSimulate}
+        disabled={totalAllocated !== budget || isSimulating}
+        className="w-full mt-10 bg-pink-accent text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 disabled:opacity-50 hover:brightness-110 transition-all"
+      >
+        {isSimulating ? <RefreshCcw className="animate-spin" /> : <Play />}
+        {isSimulating ? 'Processing Market...' : 'Run Simulation'}
+      </button>
     </div>
   );
 };

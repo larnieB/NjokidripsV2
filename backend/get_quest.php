@@ -1,19 +1,18 @@
 <?php
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, OPTIONS"); // Added OPTIONS
-header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Added headers
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 // 1. Handle Preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
+
 require_once 'auth_helper.php';
 
-// backend/get_quest.php
-
-// 1. Improved Auth Header Extraction
+// 2. Auth Header Extraction
 $authHeader = null;
 if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
     $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
@@ -24,6 +23,7 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
     $authHeader = $headers['Authorization'] ?? null;
 }
 
+// 3. Token Validation
 if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
     $userData = validate_jwt($matches[1]);
     if (!$userData) {
@@ -33,12 +33,11 @@ if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
     }
 } else {
     http_response_code(401);
-    echo json_encode(["error" => "Unauthorized: Token missing. Got: " . ($authHeader ?? 'nothing')]);
+    echo json_encode(["error" => "Unauthorized: Token missing"]);
     exit;
 }
 
-
-// Database connection details
+// 4. Database connection
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -52,8 +51,10 @@ if ($conn->connect_error) {
 
 $today = date('Y-m-d');
 
-// 1. Check if a quest is already assigned for today
-$sql = "SELECT q.title, q.description, q.points 
+/** * 5. Retrieve or Assign Today's Quest
+ * Updated to include task_type and simulation_data columns.
+ */
+$sql = "SELECT q.title, q.description, q.points, q.task_type, q.simulation_data 
         FROM daily_quest_log d 
         JOIN quests q ON d.quest_id = q.id 
         WHERE d.active_date = '$today'";
@@ -62,30 +63,55 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     // Return today's existing quest
-    echo json_encode($result->fetch_assoc());
+    $quest = $result->fetch_assoc();
 } else {
-    // 2. No quest found for today, pick a random one
-    $pick_sql = "SELECT id, title, description, points FROM quests ORDER BY RAND() LIMIT 1";
+    // No quest found for today, pick a random one
+    $pick_sql = "SELECT id, title, description, points, task_type, simulation_data 
+                 FROM quests ORDER BY RAND() LIMIT 1";
     $pick_result = $conn->query($pick_sql);
     
     if ($pick_result->num_rows > 0) {
-        $new_quest = $pick_result->fetch_assoc();
-        $quest_id = $new_quest['id'];
+        $quest = $pick_result->fetch_assoc();
+        $quest_id = $quest['id'];
         
-        // 3. Log this as today's quest so it stays consistent for all users
+        // Log this as today's quest for consistency
         $conn->query("INSERT INTO daily_quest_log (quest_id, active_date) VALUES ($quest_id, '$today')");
-        
-        // Return the new quest (excluding the ID)
-        unset($new_quest['id']);
-        echo json_encode($new_quest);
+        unset($quest['id']); // Hide internal ID from response
     } else {
-        echo json_encode([
+        $quest = [
             "title" => "Stay Tuned",
             "description" => "No quests available today. Check back later!",
-            "points" => 0
-        ]);
+            "points" => 0,
+            "task_type" => "quiz",
+            "simulation_data" => null
+        ];
     }
 }
+
+// 6. Handle Simulation Logic (Game Design)
+// If simulation_data is empty for a simulation task, provide a default high-stakes scenario.
+if (isset($quest['task_type']) && $quest['task_type'] === 'simulation' && empty($quest['simulation_data'])) {
+    $quest['simulation_data'] = json_encode([
+        "starting_capital" => 100000,
+        "target_roi" => 15, // 15% growth required for victory
+        "market_condition" => "Volatile",
+        "sectors" => [
+            ["name" => "Tech", "risk" => "High", "reward" => "30%"],
+            ["name" => "Fashion", "risk" => "Medium", "reward" => "15%"],
+            ["name" => "Healthcare", "risk" => "Low", "reward" => "5%"]
+        ]
+    ]);
+}
+
+// 7. Final Response Output
+// Parse simulation_data JSON before sending to frontend.
+echo json_encode([
+    "title" => $quest['title'],
+    "description" => $quest['description'],
+    "points" => $quest['points'],
+    "type" => $quest['task_type'] ?? 'quiz',
+    "simulation" => isset($quest['simulation_data']) ? json_decode($quest['simulation_data']) : null
+]);
 
 $conn->close();
 ?>
